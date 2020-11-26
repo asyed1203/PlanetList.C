@@ -1,0 +1,217 @@
+
+//PLANET LIST INDEX PROJECT
+
+
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <climits>
+#include <vector>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class Planet {
+
+  private:
+    string name;
+    double diameter;
+    double mass;
+
+  public:
+
+    Planet() {
+      name = "";
+      diameter = 0.0;
+      mass = 0.0;
+    }
+
+  Planet(string n, double dia, double m) {
+    name = n;
+    diameter = dia;
+    mass = m;
+  }
+
+  void display() {
+
+    double pi = M_PI;
+    double SurfaceArea, Density, Accelg;
+
+    // surface area = 4*pi* radius *radius
+    SurfaceArea = 4.0 * pi * (diameter / 2.0);
+
+    double volume;
+    volume = 4 / 3 * pi * pow((diameter / 2.0), 3.0);
+
+    Density = mass / volume;
+
+    //Acceleration due to gravity g= G*mass/(radius*radius)
+    //G is constant value is 6.67*10 ^-11
+
+    Accelg = mass * 6.6 * 0.000000001 / pow((diameter / 2.0), 2.0);
+
+    cout << " Name of the Planet: " << name << endl;
+    cout << "Diameter of the Planet: " << diameter << endl;
+    cout << "Mass of the Planet: " << mass << endl;
+    cout << "Surface Area of planet: " << SurfaceArea << endl;
+    cout << "Density of the planet: " << Density << endl;
+    cout << "Acceleration Due To Gravity Of The Planet:" << Accelg << endl;
+
+  }
+
+  //function to return the name of planet
+  //Will net it when finding planet
+  string getName() {
+    return name;
+  }
+
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+bool comparator(Planet a, Planet b) {
+  return a.getName().compare(b.getName()) < 0;
+}
+
+//----------FUNCTIONS USED FOR USER VALIDATION--------------------
+
+double ReadDouble(string prompt)
+{
+        double returnValue=0.0;
+        cout << prompt;
+        cin >> returnValue;
+        while (cin.fail()==1) {
+                cout << "Error! Cannot read input.\n";
+                cin.clear();
+                cin.ignore(INT_MAX,'\n');
+                cout << prompt;
+                cin >> returnValue;
+        }
+        return returnValue;
+}
+
+double ReadDouble(string prompt, double minValue)
+{
+        double returnValue=0.0;
+        returnValue=ReadDouble(prompt);
+        while (returnValue < minValue) {
+                cout << "Error!  Value must be >= " << minValue << endl;
+                returnValue=ReadDouble(prompt);
+        }
+        return returnValue;
+}
+
+double ReadDouble(string prompt, double minValue, double maxValue)
+{
+        double returnValue=0.0;
+        returnValue=ReadDouble(prompt,minValue);
+        while (returnValue > maxValue) {
+                cout << "Error!  Value must be <= " << maxValue << endl;
+                returnValue=ReadDouble(prompt,minValue);
+        }
+        return returnValue;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+
+
+int main() {
+  vector < Planet > planets(10);
+  int choice;
+  while (true) {
+
+
+    choice = ReadDouble ( "\n1. Add a Planet\n2. Delete a Planet\n3. Find a Plan
+et\n4. Display List\n5. Sort List\n6. Quit\n\nEnter your Choice:  ", 1, 6);
+
+    switch (choice) {
+
+    case 1: {
+
+      string name;
+      double mass, diameter;
+      int position;
+
+      cout << "Enter the name of planet: ";
+      cin >> name;
+      diameter = ReadDouble ("Enter the Diameter of the Planet: " ,0);
+      mass = ReadDouble ( "Enter the Mass of the Planet: ",0);
+      position= ReadDouble ("Enter the Position of the Planet: ", 1, 100 );
+
+      planets[position - 1] = Planet(name, diameter, mass);
+      break;
+    }
+
+///////////////////////////////////////////////////////////////////////////
+
+    case 2: {
+      int position;
+      cout << "Enter the position: ";
+      cin >> position;
+      //Saw these in the book, though I could incorporate it
+      planets.erase(planets.begin() + position - 1);
+
+      break;
+    }
+
+//////////////////////////////////////////////////////////////////////////////
+    case 3: {
+
+      string name;
+      cout << "Enter the name of the planet: ";
+      cin >> name;
+      bool isSearched = false;
+      for (int i = 0; i < planets.size(); i++) {
+        if (planets[i].getName() == name) {
+          planets[i].display();
+          isSearched = true;
+          break;
+        }
+      }
+      if (!isSearched) {
+        cout << "PLANET ENTERED WAS NOT FOUND!!!!" << endl;
+      }
+      break;
+    }
+
+//////////////////////////////////////////////////////////////////////////////
+
+    case 4: {
+      //display the list of all planets
+      int count = 0;
+      for (int i = 0; i < planets.size(); i++) {
+        if (planets[i].getName() != "") {
+          count++;
+          cout << "Planet " << i + 1 << ": \n";
+          planets[i].display();
+        }
+      }
+      if (count == 0)
+        cout << "NO PLANETS ARE IN THIS LIST\n";
+      break;
+    }
+
+ //////////////////////////////////////////////////////////////////////////////
+
+    case 5: {
+
+      sort(planets.begin(), planets.end(), comparator);
+      break;
+
+    }
+
+ //////////////////////////////////////////////////////////////////////////////
+
+    case 6: {
+      return 0;
+    }
+
+ //////////////////////////////////////////////////////////////////////////////
+    default: {
+      cout << "INCORRECT CHOICE, PLEASE TRY AGAIN" << endl;
+    }
+    }
+  }
+}
